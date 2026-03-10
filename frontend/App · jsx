@@ -1,0 +1,138 @@
+import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ScanCard from "./pages/ScanCard";
+import Emergency from "./pages/Emergency";
+import PatientDetails from "./pages/PatientDetails";
+import TestReports from "./pages/TestReports";
+import Pharmacy from "./pages/Pharmacy";
+import AdminPanel from "./pages/AdminPanel";
+import { Heart, Scan, LayoutDashboard, Shield, LogOut } from "lucide-react";
+
+function Nav() {
+  const { user, logout } = useAuth();
+  const nav = useNavigate();
+  const roleColor = {
+    admin: "bg-purple-100 text-purple-700",
+    doctor: "bg-blue-100 text-blue-700",
+    pharmacist: "bg-green-100 text-green-700",
+    lab_technician: "bg-yellow-100 text-yellow-700",
+  };
+  return (
+    <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
+      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 font-bold text-gray-800">
+          <div className="bg-blue-600 p-1.5 rounded-lg">
+            <Heart className="w-4 h-4 text-white" />
+          </div>
+          SmartHealth
+        </Link>
+        <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 px-2 py-1 rounded">
+            <LayoutDashboard className="w-4 h-4" />
+            Home
+          </Link>
+          <Link to="/scan" className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 px-2 py-1 rounded">
+            <Scan className="w-4 h-4" />
+            Scan
+          </Link>
+          {user?.role === "admin" && (
+            <Link to="/admin" className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 px-2 py-1 rounded">
+              <Shield className="w-4 h-4" />
+              Admin
+            </Link>
+          )}
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleColor[user?.role]}`}>
+            {user?.role}
+          </span>
+          <button
+            onClick={() => { logout(); nav("/login"); }}
+            className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-600"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function Guard({ children, roles }) {
+  const { user, ready } = useAuth();
+  if (!ready) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-2 border-blue-600 rounded-full border-t-transparent" />
+      </div>
+    );
+  }
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+  if (roles && !roles.includes(user.role)) {
+    return <Navigate to="/" />;
+  }
+  return children;
+}
+
+function Layout({ children }) {
+  return (
+    <>
+      <Nav />
+<main className="max-w-5xl mx-auto px-4 py-6">
+        {children}
+      </main>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={
+            <Guard>
+              <Layout><Dashboard /></Layout>
+            </Guard>
+          } />
+          <Route path="/scan" element={
+            <Guard>
+              <Layout><ScanCard /></Layout>
+            </Guard>
+          } />
+          <Route path="/emergency/:id" element={
+            <Guard>
+              <Layout><Emergency /></Layout>
+            </Guard>
+          } />
+          <Route path="/patient-details/:id" element={
+            <Guard roles={["admin", "doctor"]}>
+              <Layout><PatientDetails /></Layout>
+            </Guard>
+          } />
+          <Route path="/reports/:id" element={
+            <Guard roles={["admin", "doctor", "lab_technician"]}>
+              <Layout><TestReports /></Layout>
+            </Guard>
+          } />
+          <Route path="/pharmacy/:id" element={
+            <Guard roles={["pharmacist"]}>
+              <Layout><Pharmacy /></Layout>
+            </Guard>
+          } />
+          <Route path="/admin" element={
+            <Guard roles={["admin"]}>
+              <Layout><AdminPanel /></Layout>
+            </Guard>
+          } />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      <Toaster position="top-right" />
+    </BrowserRouter>
+  </AuthProvider>
+  );
+}

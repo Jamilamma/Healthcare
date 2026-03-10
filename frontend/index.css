@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn       { @apply px-4 py-2 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-blue  { @apply btn bg-blue-600 hover:bg-blue-700 text-white; }
+  .btn-red   { @apply btn bg-red-600 hover:bg-red-700 text-white; }
+  .btn-green { @apply btn bg-green-600 hover:bg-green-700 text-white; }
+  .btn-ghost { @apply btn border border-gray-300 hover:bg-gray-100 text-gray-700; }
+  .card      { @apply bg-white rounded-xl shadow border border-gray-100 p-5; }
+  .inp       { @apply w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400; }
+  .label     { @apply block text-sm font-medium text-gray-600 mb-1; }
+  .tag-red   { @apply bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-sm font-medium; }
+  .tag-blue  { @apply bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-sm font-medium; }
+  .tag-green { @apply bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-sm font-medium; }
+}
+
+@keyframes pulse-nfc {
+  0%,100% { transform:scale(1); opacity:1; }
+  50%     { transform:scale(1.08); opacity:.7; }
+}
+.nfc-pulse { animation: pulse-nfc 1.6s ease-in-out infinite; }
