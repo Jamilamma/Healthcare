@@ -59,9 +59,9 @@ const patients = [
       },
     ],
     reports: [
-  { 
-    reportType:  "blood_test", 
-    title:       "HbA1c Report Jan 2024", 
+      { 
+        reportType:  "blood_test", 
+        title:       "HbA1c Report Jan 2024", 
         description: "HbA1c: 7.2% — Borderline. Repeat in 3 months.", 
         uploadedBy:  "Vijaya Diagnostics" 
       },
@@ -160,4 +160,3 @@ async function seed() {
 }
 
 seed().catch(console.error);
-    

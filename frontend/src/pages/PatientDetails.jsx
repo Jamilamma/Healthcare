@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import toast from "react-hot-toast";
 import OTPModal from "./OTPModal";
-import { ArrowLeft, Shield, Clock, User, Hospital } from "lucide-react";
+import { ArrowLeft, Shield, Clock, User, Building2 } from "lucide-react";
 
 export default function PatientDetails() {
   const { id }  = useParams();
@@ -77,7 +77,7 @@ export default function PatientDetails() {
           </div>
 
           <div className="card">
-            <p className="font-semibold text-gray-700 mb-2 flex items-center gap-2"><Hospital className="w-4 h-4 text-purple-600"/>Past Hospital Visits</p>
+            <p className="font-semibold text-gray-700 mb-2 flex items-center gap-2"><Building2 className="w-4 h-4 text-purple-600"/>Past Hospital Visits</p>
             {dt?.pastVisits?.length ? dt.pastVisits.map((v,i)=>(
               <div key={i} className="border rounded-lg p-3 mb-2 text-sm">
                 <p className="font-semibold text-gray-800">{v.hospitalName}</p>

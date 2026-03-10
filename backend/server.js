@@ -171,11 +171,14 @@ app.get("/api/emergency/:nfcCardId", protect, async (req, res) => {
     if (!patient) 
       return res.status(404).json({ message: "Patient not found" });
 
+    // FIX: use .toObject() so spread works on Mongoose subdocument
+    const emergency = patient.emergency.toObject();
+
     res.json({ 
       success: true, 
       data: { 
         nfcCardId: patient.nfcCardId, 
-        ...patient.emergency 
+        ...emergency
       } 
     });
   } catch (e) { 
